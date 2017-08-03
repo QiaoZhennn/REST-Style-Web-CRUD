@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--Spring整合MyBatis：将数据源、事务、引入映射文件等配置全部交给Spring管理。
+        经常改变配置，更接近MyBatis的留在此处。-->
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+        <setting name="defaultStatementTimeout" value="3000"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+
+    <!--<plugins>-->
+        <!--<plugin interceptor="com.github.pagehelper.PageHelper"></plugin>-->
+    <!--</plugins>-->
+</configuration>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.mapper.EmployeeMapper">
+    <select id="getAllEmps" resultMap="MyEmp">
+        SELECT e.id eid, e.last_name last_name, e.gender gender, e.email email,e.d_id d_id, d.id did, d.dept_name dept_name
+        FROM tbl_employee e, tbl_dept d WHERE e.d_id=d.id
+    </select>
+    <resultMap id="MyEmp" type="com.ssm.beans.Employee">
+        <id column="eid" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <association property="department" javaType="com.ssm.beans.Department">
+            <id column="did" property="id"/>
+            <result column="dept_name" property="departmentName"/>
+        </association>
+    </resultMap>
+
+    <insert id="saveEmp">
+        INSERT INTO tbl_employee(last_name, gender, email, d_id) VALUE (#{lastName},#{gender},#{email},#{department.id})
+    </insert>
+    <delete id="deleteEmp">
+        DELETE FROM tbl_employee WHERE id=#{id}
+    </delete>
+    <select id="getEmpById" resultMap="MyEmp2">
+        SELECT e.id eid,last_name,email,gender,e.d_id d_id,d.id did,d.dept_name
+            FROM tbl_employee e,tbl_dept d
+        WHERE e.d_id=d.id AND e.id=#{id}
+    </select>
+    <resultMap id="MyEmp2" type="employee">
+        <id column="eid" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <association property="department" javaType="com.ssm.beans.Department">
+            <id column="did" property="id"/>
+            <result column="dept_name" property="departmentName"/>
+        </association>
+    </resultMap>
+
+    <update id="updateEmp">
+        UPDATE tbl_employee
+        <set>
+            last_name=#{lastName},
+            email=#{email},
+            gender=#{gender},
+            d_id=#{department.id}
+        </set>
+        where id=#{id}
+    </update>
+</mapper>

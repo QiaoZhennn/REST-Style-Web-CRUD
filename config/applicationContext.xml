@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+    <context:component-scan base-package="com.ssm">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <context:property-placeholder location="classpath:db.properties"/>
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!--Spring事务管理器-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--开启基于注解的事务-->
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager"/>
+    <!--整合MyBatis
+    1、创建SqlSessionFactory-->
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--指定MyBatis的全局配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--引入sql映射文件-->
+        <property name="mapperLocations" value="classpath:mapper/*"/>
+        <!--取别名-->
+        <property name="typeAliasesPackage" value="com.ssm.beans"/>
+        <!--<property name="plugins" value="com.github.pagehelper.PageInterceptor"/>-->
+    </bean>
+    <!--整合MyBatis
+    2、Mapper接口的代理实现类
+    批量扫描mapper接口，生成代理实现类，让SpringIOC容器管理，从而可以使用@AutoWired-->
+    <mybatis-spring:scan base-package="com.ssm.mapper"/>
+    <!--古老的配置方式
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ssm.mapper"/>
+    </bean>-->
+</beans>
